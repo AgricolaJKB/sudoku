@@ -35,9 +35,6 @@ def scrapeInitial(driver, email, password):
     waitAndClick(driver, '//*[@id="content"]/app-paywall-layer/div/div/div/div/div/div[3]/a')
     driver.find_element_by_id('login_email').send_keys(email)
     driver.find_element_by_id('login_pass').send_keys(password)
-
-    # TODO Hier fehlt noch ein Abschnitt
-
     waitAndClick(driver, '//*[@id="login"]/div[4]/input')
 
     # Startkonstellation scrapen
@@ -66,7 +63,6 @@ def main():
         email = file.read()
     with open('private/password.txt') as file:
         password = file.read()
-
 
     driver = openDriver(url)
     result = scrapeInitial(driver, email, password)
