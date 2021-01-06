@@ -5,7 +5,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import os, time
-import pandas as pd
 
 def openDriver(url):
     chromeOptions = webdriver.ChromeOptions()
@@ -18,14 +17,30 @@ def openDriver(url):
 
     return driver
 
-def scrapeInitial(driver):
+def waitAndClick(driver, xpath):
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+    element = driver.find_element_by_xpath(xpath)
+    element.click()
+
+def scrapeInitial(driver, email, password):
+    # Datenschutzerklärung zustimmen
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'sp_message_iframe_238176')))
     driver.switch_to.frame('sp_message_iframe_238176')
+    waitAndClick(driver, '/html/body/div/div[3]/button')
 
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div[3]/button')))
-    privacyButton = driver.find_element_by_xpath('/html/body/div/div[3]/button')
-    privacyButton.click()
+    # Höllisch-Schwierigkeitsstufe auswählen
+    waitAndClick(driver, '//*[@id="content"]/app-nav-bar/div/div[2]/div/div[2]/div/div[5]/button')
 
+    # Einloggen
+    waitAndClick(driver, '//*[@id="content"]/app-paywall-layer/div/div/div/div/div/div[3]/a')
+    driver.find_element_by_id('login_email').send_keys(email)
+    driver.find_element_by_id('login_pass').send_keys(password)
+
+    # TODO Hier fehlt noch ein Abschnitt
+
+    waitAndClick(driver, '//*[@id="login"]/div[4]/input')
+
+    # Startkonstellation scrapen
     WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'fixed-value')))
 
     html = driver.page_source
@@ -47,8 +62,14 @@ def scrapeInitial(driver):
 
 def main():
     url = 'https://sudoku.zeit.de'
+    with open('private/email.txt') as file:
+        email = file.read()
+    with open('private/password.txt') as file:
+        password = file.read()
+
+
     driver = openDriver(url)
-    result = scrapeInitial(driver)
+    result = scrapeInitial(driver, email, password)
     for row in result:
         print(row)
     driver.close()
