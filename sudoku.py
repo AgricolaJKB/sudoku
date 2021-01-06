@@ -82,8 +82,8 @@ def main():
     driver = openDriver(url)
     startingGrid, soup = scrapeInitial(driver, email, password)
 
-    # Hier fehlt dein Algorithmus. startingGrid enthält die Startaufstellung (als Liste von Listen), das Ergebnis
-    # muss dann in result abgespeichert werden.
+    # Hier fehlt dein Algorithmus. "startingGrid" enthält die Startaufstellung (als Liste von Listen), das Ergebnis
+    # muss dann im gleichen Format in "result" abgespeichert werden.
     #
     # Format für In- und Output:
     # [[0, 0, 0, 0, 5, 4, 0, 0, 8]
@@ -96,7 +96,7 @@ def main():
     # [0, 8, 0, 3, 0, 0, 0, 2, 0]
     # [7, 1, 0, 0, 8, 0, 0, 3, 5]]
 
-    insertResult(driver, startingGrid, soup)
+    insertResult(driver, result, soup)
 
 if __name__ == '__main__':
     main()
